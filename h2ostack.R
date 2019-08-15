@@ -137,22 +137,20 @@ pred_log <- pred_log[,3]
 
 pred_log <- as.vector(pred_log)
 
-
+c1 <- get.max_f1(pred_gbm, test$default)
+c2 <- get.max_f1(preds_dl, test$default)
+c3<- get.max_f1(preds_en, test$default)
+c4 <- get.max_f1(preds_en_nn, test$default)
 
 library(hmeasure)
 scores <- data.frame(GBM = pred_gbm, NN = pred_dl, Ensemble = pred_en, Ensemble_nn = pred_en_nn)
-results <- HMeasure(as.vector(test$default),scores, severity.ratio = 0.125,  threshold = c(0.203665599105636,0.222937860919032,0.204142949578486, 0.234378390672705))
+results <- HMeasure(as.vector(test$default),scores, severity.ratio = 0.125,  threshold = c(c1[2],c2[2], c3[2],c4[2]))
 summary(results)
 results$metrics
 
 h2o.confusionMatrix(perf_nn)
 
 
-write.csv(pred_en, "pred_en.csv")
-write.csv(pred_dl, "pred_dl.csv")
-write.csv(pred_gbm, "pred_gbm.csv")
-
-write.csv(pred_en_nn, "pred_en_nn")
 
 h2o.varimp_plot(my_gbm, num_of_features = 15)
 h2o.varimp_plot(my_dl, num_of_features = 15)
